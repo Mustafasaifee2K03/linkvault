@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global dark theme */
+html,
+body {
+  background-color: black;
+  color: #fca5a5;
+}
+
+/* Subtle vignette */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 60%,
+    rgba(0, 0, 0, 0.85)
+  );
+  z-index: 1;
+}
+
+/* Subtle scanlines */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.02) 0px,
+    rgba(255, 255, 255, 0.02) 1px,
+    transparent 2px,
+    transparent 4px
+  );
+  opacity: 0.25;
+  mix-blend-mode: overlay;
+  z-index: 2;
+}
+
+/* Card pulse */
+@keyframes pulse-blood {
+  0% {
+    box-shadow: 0 0 18px rgba(255, 0, 0, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 42px rgba(255, 0, 0, 0.75);
+  }
+  100% {
+    box-shadow: 0 0 18px rgba(255, 0, 0, 0.35);
+  }
+}
+
+.pulse-blood {
+  animation: pulse-blood 3s infinite;
+}
