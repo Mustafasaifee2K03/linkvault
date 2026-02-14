@@ -26,8 +26,28 @@ This project was developed as a take-home assignment to demonstrate secure link-
 
 ## 📂 Project Structure
 linkvault/
+
 ├── linkvault-backend/
 
 ├── linkvault-frontend/
 
 └── README.md
+
+
+---
+
+## ⚙️ Setup Instructions
+
+### 1️⃣ Clone Repository
+
+```bash
+git clone https://github.com/Mustafasaifee2K03/linkvault.git
+cd linkvault
+
+### 1️⃣ Start Backend
+```bash
+cd linkvault-backend
+npm install
+node index.js
+
+
