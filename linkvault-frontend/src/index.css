@@ -57,3 +57,128 @@ body::after {
 .pulse-blood {
   animation: pulse-blood 3s infinite;
 }
+
+.bg-gradient-radial {
+  background: radial-gradient(circle, var(--tw-gradient-stops));
+}
+
+/* Floating animation for eyes */
+@keyframes subtle-float {
+  0%, 100% {
+    transform: translateY(-50%) translateX(0);
+  }
+  50% {
+    transform: translateY(-48%) translateX(-3px);
+  }
+}
+
+@keyframes subtle-float-delayed {
+  0%, 100% {
+    transform: translateY(-50%) translateX(0);
+  }
+  50% {
+    transform: translateY(-52%) translateX(3px);
+  }
+}
+
+.animate-subtle-float {
+  animation: subtle-float 4s ease-in-out infinite;
+}
+
+.animate-subtle-float-delayed {
+  animation: subtle-float-delayed 4s ease-in-out infinite;
+  animation-delay: 0.5s;
+}
+
+.animate-pulse-slow {
+  animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Glitch effect */
+@keyframes glitch {
+  0% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    transform: translate(-2px, -2px);
+  }
+  60% {
+    transform: translate(2px, 2px);
+  }
+  80% {
+    transform: translate(2px, -2px);
+  }
+  100% {
+    transform: translate(0);
+  }
+}
+
+.hover-glitch:hover {
+  animation: glitch 0.3s infinite;
+}
+
+/* Screen shake animation for wrong password */
+@keyframes shake {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translate(-10px, 5px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translate(10px, -5px);
+  }
+}
+
+.animate-shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+/* Fast pulse for wrong password */
+@keyframes pulse-fast {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.animate-pulse-fast {
+  animation: pulse-fast 0.3s ease-in-out 3;
+}
+
+/* Intense glitch for error message */
+@keyframes glitch-intense {
+  0% {
+    transform: translate(0);
+    text-shadow: 0 0 20px rgba(255, 0, 0, 1);
+  }
+  20% {
+    transform: translate(-5px, 5px);
+    text-shadow: 5px 0 20px rgba(255, 0, 0, 1), -5px 0 20px rgba(0, 255, 255, 0.8);
+  }
+  40% {
+    transform: translate(-5px, -5px);
+    text-shadow: -5px 0 20px rgba(255, 0, 0, 1), 5px 0 20px rgba(0, 255, 0, 0.8);
+  }
+  60% {
+    transform: translate(5px, 5px);
+    text-shadow: 0 5px 20px rgba(255, 0, 0, 1), 0 -5px 20px rgba(255, 255, 0, 0.8);
+  }
+  80% {
+    transform: translate(5px, -5px);
+    text-shadow: 5px 5px 20px rgba(255, 0, 0, 1);
+  }
+  100% {
+    transform: translate(0);
+    text-shadow: 0 0 20px rgba(255, 0, 0, 1);
+  }
+}
+
+.animate-glitch-intense {
+  animation: glitch-intense 0.5s ease-in-out infinite;
+}
