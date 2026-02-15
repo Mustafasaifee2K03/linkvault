@@ -48,7 +48,7 @@ linkvault/
 ### 1. Clone Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/Mustafasaifee2K03/linkvault.git
 cd linkvault
 ````
 
