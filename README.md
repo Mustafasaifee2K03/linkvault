@@ -142,8 +142,3 @@ Deletes content using owner authentication or delete token.
 Returns view statistics.
 
 ```
-
-
-
-Now you can rest.
-```
