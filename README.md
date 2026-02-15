@@ -142,7 +142,7 @@ Returns view statistics.
 
 ### 1. Use of UUID for Link Generation
 
-Instead of using incremental IDs (1, 2, 3, …), each uploaded content entry is assigned a UUID v4 value. The main reason for this decision was security. Sequential IDs can be guessed easily, which would allow users to enumerate and access content that was not meant for them. A UUID provides a very large address space (128-bit randomness), making brute-force guessing practically infeasible.
+Instead of using incremental IDs (1, 2, 3, …), we are doing it such that each uploaded content entry is assigned a UUID v4 value. The main reason for this decision was security. Sequential IDs can be guessed easily, which would allow users to brute force and access content that was not meant for them. A UUID provides a very large address space (128-bit randomness), making brute-force guessing practically impossible.
 
 This approach ensures that access to content is strictly link-based, as required in the assignment.
 
@@ -152,7 +152,7 @@ This approach ensures that access to content is strictly link-based, as required
 
 Although a background cleanup job removes expired records periodically, content expiration is also checked during every access request. This was done intentionally to prevent edge cases where:
 
-- The cron job has not yet executed.
+- The cron job responsible for cleanup purpose has not yet executed.
 - The server restarts before cleanup runs.
 
 By validating expiry during each API call, the system guarantees that expired content is never accessible, even if background cleanup is delayed.
@@ -164,18 +164,18 @@ By validating expiry during each API call, the system guarantees that expired co
 A scheduled job runs every few minutes to:
 
 - Delete expired content from the database.
-- Remove associated uploaded files from disk.
+- also remove uploaded files associated from disk.
 - Clear expired user sessions.
 
-This prevents accumulation of stale records and unused files. While runtime validation blocks access to expired content, the cron job ensures long-term consistency and storage hygiene.
+This prevents accumulation of useless records and unused files. And expiry enforcement at request tiem(as we discussed ewrlier) validation blocks access to expired content, the cron job ensures long-term consistency and deal with storage issues.
 
 ---
 
 ### 4. Separation of Metadata and File Storage
 
-Uploaded files are stored in a local directory (`uploads/`), while metadata such as expiry time, view count, password protection, and owner information is stored in SQLite.
+Uploaded files are stored in a local directory (`/uploads`), while metadata such as expiry time, view count, password protection, and owner information is stored in SQLite database.
 
-This separation keeps the system modular and easier to manage. The database handles structured data and logic constraints, while the filesystem handles binary file storage. Removing content requires deleting both the database row and the corresponding file, which keeps the system consistent.
+This separation keeps the system easier to manage. The database handles structured data and logic constraints, while the filesystem handles binary file storage. Removing content requires deleting both the database row and the corresponding file, which keeps the system consistent.
 
 ---
 
@@ -185,7 +185,7 @@ SQLite was chosen because:
 
 - It is lightweight and file-based.
 - It does not require separate server configuration.
-- It is sufficient for a single-node academic project.
+- It is sufficient for a single-node academic project(not for production where multiple nodes may be required).
 
 Since this project is intended for demonstration and local execution, SQLite provides simplicity without introducing additional infrastructure complexity. For large-scale deployment, a production database such as PostgreSQL would be more appropriate.
 
@@ -221,7 +221,7 @@ Backend validation includes:
 - View count enforcement.
 - Password validation.
 
-This layered validation ensures that bypassing frontend checks does not compromise system integrity.
+This layered validation ensures thta if user bypasses frontend checks still the system integrity doesnt compromise.
 
 ---
 
