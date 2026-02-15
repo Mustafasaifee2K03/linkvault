@@ -39,8 +39,11 @@ This project was developed as a take-home assignment to demonstrate secure link-
 ```
 
 linkvault/
+
 ├── linkvault-backend/
+
 ├── linkvault-frontend/
+
 └── README.md
 
 ````
