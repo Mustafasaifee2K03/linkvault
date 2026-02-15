@@ -1,10 +1,3 @@
-Perfect. I will **not change a single word of your content**.
-I will only convert it into proper Markdown formatting.
-
-Copy everything below and paste directly into `README.md`.
-
----
-
 ```markdown
 # LinkVault
 
@@ -144,4 +137,132 @@ Deletes content using owner authentication or delete token.
 **POST /api/stats/:id**
 Returns view statistics.
 
-```
+
+Design Decisions
+1. Use of UUID for Link Generation
+
+Instead of using incremental IDs (1, 2, 3, …), each uploaded content entry is assigned a UUID v4 value. The main reason for this decision was security. Sequential IDs can be guessed easily, which would allow users to enumerate and access content that was not meant for them. A UUID provides a very large address space (128-bit randomness), making brute-force guessing practically infeasible.
+
+This approach ensures that access to content is strictly link-based, as required in the assignment.
+
+2. Expiry Enforcement at Request Time
+
+Although a background cleanup job removes expired records periodically, content expiration is also checked during every access request. This was done intentionally to prevent edge cases where:
+
+The cron job has not yet executed.
+
+The server restarts before cleanup runs.
+
+By validating expiry during each API call, the system guarantees that expired content is never accessible, even if background cleanup is delayed.
+
+3. Background Cleanup Using node-cron
+
+A scheduled job runs every few minutes to:
+
+Delete expired content from the database.
+
+Remove associated uploaded files from disk.
+
+Clear expired user sessions.
+
+This prevents accumulation of stale records and unused files. While runtime validation blocks access to expired content, the cron job ensures long-term consistency and storage hygiene.
+
+4. Separation of Metadata and File Storage
+
+Uploaded files are stored in a local directory (uploads/), while metadata such as:
+
+Expiry time
+
+View count
+
+Password protection
+
+Owner information
+
+is stored in SQLite.
+
+This separation keeps the system modular and easier to manage. The database handles structured data and logic constraints, while the filesystem handles binary file storage. This also simplifies deletion logic since removing a content entry requires deleting both the database row and the corresponding file.
+
+5. SQLite as the Database
+
+SQLite was chosen because:
+
+It is lightweight and file-based.
+
+It does not require separate server configuration.
+
+It is sufficient for a single-node academic project.
+
+Since this project is intended for demonstration and local execution, SQLite provides simplicity without introducing additional infrastructure complexity. For large-scale deployment, a production database such as PostgreSQL would be more appropriate.
+
+6. Token-Based Session Authentication
+
+User authentication is implemented using session tokens stored in a dedicated sessions table. When a user logs in:
+
+A UUID token is generated.
+
+The token is stored with an expiration time.
+
+The frontend includes the token in subsequent requests.
+
+This approach avoids maintaining in-memory sessions and keeps authentication stateless at the API level. Session expiration is validated both during requests and through periodic cleanup.
+
+7. Input Validation on Both Frontend and Backend
+
+Validation is implemented at two levels:
+
+Frontend:
+
+File size limits.
+
+Allowed MIME type checks.
+
+Required input checks.
+
+Backend:
+
+File size enforced through Multer.
+
+MIME type whitelist validation.
+
+Expiry validation.
+
+View count enforcement.
+
+Password validation.
+
+This layered validation ensures that bypassing frontend checks does not compromise system integrity.
+
+8. View Count and One-Time Access Handling
+
+View count is incremented only after successful validation of:
+
+Expiry
+
+Password (if required)
+
+Maximum view constraints
+
+For one-time links, the content is deleted immediately after successful access. This guarantees that the link cannot be reused.
+
+The update query ensures that view limits are respected atomically to prevent race conditions.
+
+9. Delete Token Mechanism
+
+In addition to owner authentication, each content entry is assigned a delete token. This allows manual deletion even if the uploader is not logged in.
+
+This design choice improves usability while maintaining access control.
+
+10. RESTful API Structure
+
+The backend routes were structured using clear resource-based endpoints:
+
+/api/upload
+
+/api/content/:id
+
+/api/download/:id
+
+This keeps the API predictable and logically grouped around content resources.
+
+HTTP methods (GET, POST) are used consistently based on action type.
