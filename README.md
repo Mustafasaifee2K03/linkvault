@@ -253,3 +253,57 @@ The backend routes are structured using resource-based endpoints such as:
 
 HTTP methods (GET, POST) are used consistently based on action type. This keeps the API predictable and logically organized.
 
+
+
+## Assumptions & Limitations
+
+### Assumptions
+
+1. The application is intended to run on a single server instance.  
+   It assumes that both the backend and the SQLite database file are hosted on the same machine.
+
+2. The system is designed primarily for local execution and demonstration purposes.  
+   It assumes a development environment where the frontend and backend run on `localhost`.
+
+3. It is assumed that users will securely store their generated share link and delete token if they wish to access or delete the content later.
+
+4. The system assumes moderate usage. SQLite and local file storage are sufficient for small-scale applications but not designed for high-concurrency production environments.
+
+5. It is assumed that file uploads will not exceed the configured size limit (10MB), and only allowed MIME types are accepted.
+
+---
+
+### Limitations
+
+1. **Local File Storage**  
+   Uploaded files are stored in a local directory (`uploads/`).  
+   This means:
+   - Files are not distributed across servers.
+   - If the server is restarted or storage is cleared, files may be lost.
+   - The system is not optimized for horizontal scaling.
+
+2. **SQLite Database**  
+   SQLite is used for simplicity. While it works well for single-node systems, it may not handle high traffic or concurrent writes efficiently in large-scale deployments.
+
+3. **No Rate Limiting**  
+   The application does not implement rate limiting. In a production environment, rate limiting would be necessary to prevent abuse or brute-force attempts.
+
+4. **Content Password Storage**  
+   Content-level passwords are stored in plain text.  
+   Although user account passwords are hashed using bcrypt, content passwords could be improved by hashing and using constant-time comparison.
+
+5. **No Distributed Deployment Support**  
+   The current architecture does not support multi-server deployment. Shared file storage or cloud object storage would be required for scaling.
+
+6. **No HTTPS Enforcement in Development**  
+   The application is designed for local development and does not enforce HTTPS. Secure deployment would require HTTPS configuration.
+
+7. **Manual Delete Token Responsibility**  
+   If a user uploads content without logging in and loses the delete token, there is no way to recover or manually delete the content before expiration.
+
+8. **No Advanced Logging or Monitoring**  
+   The application does not include structured logging, monitoring, or analytics features that would typically be required in production systems.
+
+---
+
+
